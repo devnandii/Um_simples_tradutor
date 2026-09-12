@@ -23,11 +23,22 @@ public class Parser {
 
     public void parse() {
 
-        expr();
+        letStatement();
 
         if (currentToken.type != TokenType.EOF) {
             throw new Error("syntax error");
         }
+    }
+
+    private void letStatement() {
+       match(TokenType.LET);
+       String id = currentToken.lexeme;
+       match(TokenType.IDENT);
+       match(TokenType.EQ);
+       expr();
+
+       System.out.println("pop " + id);
+       match(TokenType.SEMICOLON);
     }
 
     private void expr() {
@@ -70,7 +81,5 @@ public class Parser {
 
             oper();
         }
-
-        // ε
     }
 }
