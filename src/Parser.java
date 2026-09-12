@@ -1,35 +1,31 @@
 public class Parser {
 
-    private byte[] input;
-    private int current;
+    private Scanner scan;
+    private Token currentToken;
 
     public Parser(byte[] input) {
-        this.input = input;
-        this.current = 0;
+        scan = new Scanner(input);
+        currentToken = scan.nextToken();
     }
 
-    public void parse() {
-        expr();
+    private void nextToken() {
+        currentToken = scan.nextToken();
+    }
 
-        if (peek() != '\0') {
+    private void match(TokenType type) {
+
+        if (currentToken.type == type) {
+            nextToken();
+        } else {
             throw new Error("syntax error");
         }
     }
 
-    private char peek() {
+    public void parse() {
 
-        if (current < input.length) {
-            return (char) input[current];
-        }
+        expr();
 
-        return '\0';
-    }
-
-    private void match(char c) {
-
-        if (c == peek()) {
-            current++;
-        } else {
+        if (currentToken.type != TokenType.EOF) {
             throw new Error("syntax error");
         }
     }
@@ -41,25 +37,22 @@ public class Parser {
 
     private void digit() {
 
-        if (Character.isDigit(peek())) {
+        if (currentToken.type == TokenType.NUMBER) {
 
-            System.out.println(
-                "push " + peek()
-            );
+            System.out.println("push " + currentToken.lexeme);
 
-            match(peek());
+            match(TokenType.NUMBER);
 
         } else {
-
             throw new Error("syntax error");
         }
     }
 
     private void oper() {
 
-        if (peek() == '+') {
+        if (currentToken.type == TokenType.PLUS) {
 
-            match('+');
+            match(TokenType.PLUS);
 
             digit();
 
@@ -67,9 +60,9 @@ public class Parser {
 
             oper();
 
-        } else if (peek() == '-') {
+        } else if (currentToken.type == TokenType.MINUS) {
 
-            match('-');
+            match(TokenType.MINUS);
 
             digit();
 
@@ -78,7 +71,6 @@ public class Parser {
             oper();
         }
 
-        // ε:
-        // não faz nada e retorna
+        // ε
     }
 }
