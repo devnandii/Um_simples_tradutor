@@ -10,6 +10,7 @@ public class Scanner {
 
     static {
         keywords.put("let", TokenType.LET);
+        keywords.put("print", TokenType.PRINT);
     }
 
     public Scanner(byte[] input) {
@@ -96,6 +97,14 @@ public class Scanner {
             case '-':
                 advance();
                 return new Token(TokenType.MINUS, "-");
+
+            case '*':
+                advance();
+                return new Token(TokenType.STAR, "*");
+
+            case '/':
+                advance();
+                return new Token(TokenType.SLASH, "/");
 
             case '=':
                 advance();
